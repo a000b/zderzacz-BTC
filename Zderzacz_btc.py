@@ -1,6 +1,6 @@
 ## Program generuje dowolną ilość kluczy prywatnych oraz przekształca je w opcjonalnie w adresy Legacy bądź SegWit.
 ## Następnie odpytuje blockstream.info i oblicza saldo danego konta.
-## To tylko zabawa, szansa na to że trafi się na tzw kolizję jest praktycznie zerowa.
+## To tylko zabawa, szansa na to że trafi się na tzw kolizję jest praktycznie zerowa, jak 1 do 2^256.
 ##
 ## Kod jest zlepkiem kilku rozwiązań.
 ##
@@ -18,6 +18,7 @@
 
 import random, ecdsa, hashlib, base58, binascii, requests, time
 
+##--------------BECH32-------------------------------------------------
 CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l"
 def bech32_polymod(values):
     """Internal function that computes the Bech32 checksum."""
@@ -109,28 +110,9 @@ def encode(hrp, witver, witprog):
         return None
     return ret
 
-def privkey_generator():
-    
-    d ={}
-    private_key = (random.getrandbits(256)).to_bytes(32, byteorder="little", signed=False)
-    fullkey = '80' + binascii.hexlify(private_key).decode()
-    sha256a = hashlib.sha256(binascii.unhexlify(fullkey)).hexdigest()
-    sha256b = hashlib.sha256(binascii.unhexlify(sha256a)).hexdigest()
-    WIF = base58.b58encode(binascii.unhexlify(fullkey+sha256b[:8]))
-    signing_key = ecdsa.SigningKey.from_string(private_key, curve=ecdsa.SECP256k1)
-    verifying_key = signing_key.get_verifying_key()
-    
-    d["pkey"] = private_key
-    d["Wk"] = WIF
-    d["sk"] = signing_key
-    d["vk"] = verifying_key
-    return d
 
-def ripemd160(x):
-    d = hashlib.new('ripemd160')
-    d.update(x)
-    return d
 
+##---------------------GENERATOR-SEGWIT----------------------------------------
 def generator_segwit(a):
     
     start = time.time()
@@ -182,14 +164,16 @@ def generator_segwit(a):
             print("Private Key", str(i) + ": " + private_key.hex())
             print("Private Key  WIF", str(i) + ": " + WIF.decode())
             break
-    
+
     calculate_speed(start, time.time(), number)
-        
+    
+##---------------------GENERATOR-LEGACY----------------------------------------        
 def generator_legacy(a):
     
     start = time.time()
     number = a
     for n in range(number):
+        
         d = privkey_generator()
         private_key = d["pkey"]
         WIF = d["Wk"]
@@ -216,14 +200,8 @@ def generator_legacy(a):
     calculate_speed(start, time.time(), number)
 
 
-def calculate_speed(tstart, tend, ilosc):
-    
-    tdiff = (tend - tstart)
-    sp = ilosc / tdiff
-    print("\nProcess time: ", str(tdiff), " sec")
-    print("Calculated average speed: ", str(sp), " key/sec") 
 
-    
+##---------------------POBIERANIE-DANYCH-ONLINE----------------------------------------    
 def sprawdz_balance_blockstream(a):
     
     addr = a    
@@ -246,6 +224,39 @@ def check_price():
     else:
         print(response.status_code)
     return a
+
+##---------------------FUNKCJE-DODATKOWE----------------------------------------
+
+def calculate_speed(tstart, tend, ilosc):
+    
+    tdiff = (tend - tstart)
+    sp = ilosc / tdiff
+    print("\nProcess time: ", str(tdiff), " sec")
+    print("Calculated average speed: ", str(sp), " key/sec")
+
+def privkey_generator():
+    
+    d ={}
+    private_key = (random.getrandbits(256)).to_bytes(32, byteorder="little", signed=False)
+    fullkey = '80' + binascii.hexlify(private_key).decode()
+    sha256a = hashlib.sha256(binascii.unhexlify(fullkey)).hexdigest()
+    sha256b = hashlib.sha256(binascii.unhexlify(sha256a)).hexdigest()
+    WIF = base58.b58encode(binascii.unhexlify(fullkey+sha256b[:8]))
+    signing_key = ecdsa.SigningKey.from_string(private_key, curve=ecdsa.SECP256k1)
+    verifying_key = signing_key.get_verifying_key()
+    
+    d["pkey"] = private_key
+    d["Wk"] = WIF
+    d["sk"] = signing_key
+    d["vk"] = verifying_key
+    return d
+
+def ripemd160(x):
+    d = hashlib.new('ripemd160')
+    d.update(x)
+    return d
+
+##---------------------PROGRAM----------------------------------------
 
 wybor = int(input("Jeżeli chcesz generować adresy Legacy wciśnij 1, jeżeli SegWit wciśnij 2 :"))
 
