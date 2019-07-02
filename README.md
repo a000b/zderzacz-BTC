@@ -23,5 +23,5 @@ https://www.youtube.com/channel/UCi9Mf3veSDDIMdGGtPmPu1g
 
 https://www.reddit.com/r/Bitcoin/comments/7tzq3w/generate_your_own_private_key_5_lines_of_python/
 
-https://github.com/blockstream/esplora/blob/master/API.md)
+https://github.com/blockstream/esplora/blob/master/API.md
  
