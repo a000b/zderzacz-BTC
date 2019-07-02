@@ -1,13 +1,10 @@
 ## Program generuje dowolną ilość kluczy prywatnych oraz przekształca je w opcjonalnie w adresy Legacy bądź SegWit.
 ## Następnie odpytuje blockstream.info i oblicza saldo danego konta.
-## To tylko zabawa szansa na to że trafi się na tzw kolizję jest więcej niż mała.
+## To tylko zabawa, szansa na to że trafi się na tzw kolizję jest praktycznie zerowa.
 ##
-## Kod jest zlepkiem kilku rozwiązań. Mój wkład jest niewielki. Jest sporo do optymalizacji.
-## 
-## Generowanie Bech32 zostało zajebane z tutoriala umieszczonego na YouTube przez Shlomi Zeltsinger.
-## Który wykorzysuje kod napisany przez Pietera Wuille. Jednego z głównych devów Bitcoin core/ Blockstream.
-## Kod generujący adress legacy został zajebany z Reddit od usera nykee-J.
+## Kod jest zlepkiem kilku rozwiązań.
 ##
+## Linki do źródeł.
 ## (https://github.com/sipa/bech32/tree/master/ref/python)
 ## (https://github.com/zeltsi/segwit_tutorial/tree/master/addresses)
 ## (https://www.youtube.com/channel/UCi9Mf3veSDDIMdGGtPmPu1g)
@@ -21,7 +18,6 @@
 
 import random, ecdsa, hashlib, base58, binascii, requests, time
 
-## BECH32 (https://github.com/sipa/bech32/tree/master/ref/python)
 CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l"
 def bech32_polymod(values):
     """Internal function that computes the Bech32 checksum."""
@@ -190,6 +186,7 @@ def generator_segwit(a):
     calculate_speed(start, time.time(), number)
         
 def generator_legacy(a):
+    
     start = time.time()
     number = a
     for n in range(number):
@@ -239,7 +236,17 @@ def sprawdz_balance_blockstream(a):
         print("Err: ", response.status_code)
         
     return b
-    
+
+def check_price():
+    response = requests.get('https://blockchain.info/ticker')
+
+    if response.status_code == 200:
+        content = response.json()
+        a = (str(content['USD']['last']) + " USD")
+    else:
+        print(response.status_code)
+    return a
+
 wybor = int(input("Jeżeli chcesz generować adresy Legacy wciśnij 1, jeżeli SegWit wciśnij 2 :"))
 
 if wybor == 1:
@@ -251,4 +258,5 @@ elif wybor == 2:
 else:
     print("Nie ma takiej opcji")
     
-print("koniec")
+print("BTC last price /Blockchain.info/ : ", check_price())    
+print("Koniec")
