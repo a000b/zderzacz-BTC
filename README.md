@@ -11,7 +11,7 @@ Program generuje dowolną ilość kluczy prywatnych oraz przekształca je w opcj
 Następnie odpytuje blockstream.info i oblicza saldo danego konta.
 To tylko zabawa szansa na to że trafi się na tzw kolizję jest więcej niż mała.
 
-Kod jest zlepkiem kilku rozwiązań. Mój wkład jest niewielki. Jest sporo do optymalizacji.
+Kod jest zlepkiem kilku rozwiązań. 
 
 Linki do materiałów źródłowych. 
 
