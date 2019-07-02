@@ -19,7 +19,7 @@
 ## Done by Atari_XE ( wypok AD 2019)
 
 
-import random, ecdsa, hashlib, base58, binascii, requests
+import random, ecdsa, hashlib, base58, binascii, requests, time
 
 ## BECH32 (https://github.com/sipa/bech32/tree/master/ref/python)
 CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l"
@@ -137,6 +137,7 @@ def ripemd160(x):
 
 def generator_segwit(a):
     
+    start = time.time()
     number = a
     for n in range(number):
 
@@ -189,9 +190,14 @@ def generator_segwit(a):
             print("Private Key", str(i) + ": " + private_key.hex())
             print("Private Key  WIF", str(i) + ": " + WIF.decode())
             break
+    
+    tdiff = (time.time() - start)
+    sp = number / tdiff
+    print("\nProcess time: ", str(tdiff), " sec")
+    print("Calculated average speed: ", str(sp), " key/sec") 
         
 def generator_legacy(a):
-    
+    start = time.time()
     number = a
     for n in range(number):
         d = privkey_generator()
@@ -217,6 +223,11 @@ def generator_legacy(a):
             print("{:25} | {:35} | {:20}".format("Bitcoin Address " + str(i), publ_addr_b.decode(), str(balance) + " BTC"))
             print('Private Key    ', str(i) + ": " + WIF.decode())
             break
+    
+    tdiff = (time.time() - start)
+    sp = number /tdiff
+    print("\nProcess time: ", str(tdiff), " sec")
+    print("Calculated average speed: ", str(sp), " key/sec") 
         
     
 def sprawdz_balance_blockstream(a):
