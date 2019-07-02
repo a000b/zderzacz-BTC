@@ -158,15 +158,13 @@ def generator_segwit(a):
              public_key = bytes.fromhex(f'03{x_cor.hex()}')
 
         sha256_key = hashlib.sha256(public_key)
-        ripemd160_key = hashlib.new("ripemd160")
-        ripemd160_key.update(sha256_key.digest())
+        ripemd160_key = ripemd160(sha256_key.digest())
 
         keyhash = ripemd160_key.digest()
         P2WPKH_V0 = bytes.fromhex(f'0014{keyhash.hex()}')
 
         sha256_P2WPKH_V0 = hashlib.sha256(P2WPKH_V0)
-        ripemd160_P2WPKH_V0 = hashlib.new("ripemd160")
-        ripemd160_P2WPKH_V0.update(sha256_P2WPKH_V0.digest())
+        ripemd160_P2WPKH_V0 = ripemd160(sha256_P2WPKH_V0.digest())
 
         scripthash = ripemd160_P2WPKH_V0.digest()
         P2SH_P2WPKH_V0 = bytes.fromhex(f'a9{scripthash.hex()}87')
