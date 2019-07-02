@@ -9,7 +9,7 @@ Done by Atari_XE ( wypok AD 2019)
 
 Program generuje dowolną ilość kluczy prywatnych oraz przekształca je w opcjonalnie w adresy Legacy bądź SegWit.
 Następnie odpytuje blockstream.info i oblicza saldo danego konta.
-To tylko zabawa szansa na to że trafi się na tzw kolizję jest więcej niż mała.
+To tylko zabawa szansa na to że trafi się na już istniejący klucz jest praktycznie zerowa, jak 1 do 2^256.
 
 Kod jest zlepkiem kilku rozwiązań. 
 
