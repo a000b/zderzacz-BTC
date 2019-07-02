@@ -147,8 +147,6 @@ def generator_segwit(a):
         signing_key = d["sk"]
         verifying_key = d["vk"]
         
-##        SegWit tutorial (https://github.com/zeltsi/segwit_tutorial/tree/master/addresses)
-##        Shlomi Zeltsinger (https://www.youtube.com/channel/UCi9Mf3veSDDIMdGGtPmPu1g)
         x_cor = bytes.fromhex(verifying_key.to_string().hex())[:32]
         y_cor = bytes.fromhex(verifying_key.to_string().hex())[32:]
 
@@ -189,10 +187,7 @@ def generator_segwit(a):
             print("Private Key  WIF", str(i) + ": " + WIF.decode())
             break
     
-    tdiff = (time.time() - start)
-    sp = number / tdiff
-    print("\nProcess time: ", str(tdiff), " sec")
-    print("Calculated average speed: ", str(sp), " key/sec") 
+    calculate_speed(start, time.time(), number)
         
 def generator_legacy(a):
     start = time.time()
@@ -203,7 +198,6 @@ def generator_legacy(a):
         WIF = d["Wk"]
         signing_key = d["sk"]
         verifying_key = d["vk"]
-##        Zajebane z Reddita (https://www.reddit.com/r/Bitcoin/comments/7tzq3w/generate_your_own_private_key_5_lines_of_python/)
 
         publ_key = '04' + binascii.hexlify(verifying_key.to_string()).decode()
         hash160 = ripemd160(hashlib.sha256(binascii.unhexlify(publ_key)).digest()).digest()
@@ -221,12 +215,17 @@ def generator_legacy(a):
             print("{:25} | {:35} | {:20}".format("Bitcoin Address " + str(i), publ_addr_b.decode(), str(balance) + " BTC"))
             print('Private Key    ', str(i) + ": " + WIF.decode())
             break
+        
+    calculate_speed(start, time.time(), number)
+
+
+def calculate_speed(tstart, tend, ilosc):
     
-    tdiff = (time.time() - start)
-    sp = number /tdiff
+    tdiff = (tend - tstart)
+    sp = ilosc / tdiff
     print("\nProcess time: ", str(tdiff), " sec")
     print("Calculated average speed: ", str(sp), " key/sec") 
-        
+
     
 def sprawdz_balance_blockstream(a):
     
